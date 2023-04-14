@@ -3,6 +3,7 @@ package render
 import (
 	"bytes"
 	"github.com/jhowilbur/golang-web-app/pkg/config"
+	"github.com/jhowilbur/golang-web-app/pkg/models"
 	"html/template"
 	"log"
 	"net/http"
@@ -19,7 +20,7 @@ func NewTemplates(a *config.AppConfig) {
 }
 
 // RenderTemplate renders templates using html/template
-func RenderTemplateWithCache(w http.ResponseWriter, tmpl string) {
+func RenderTemplate(w http.ResponseWriter, tmpl string, templateData *models.TemplateData) {
 	// get the template cache from the app config
 	var templateCache map[string]*template.Template
 
@@ -37,8 +38,8 @@ func RenderTemplateWithCache(w http.ResponseWriter, tmpl string) {
 		log.Fatal("Could not get template from template cache")
 	}
 
-	buffer := new(bytes.Buffer)             // execute values get from map and execute that directly
-	_ = templateWanted.Execute(buffer, nil) // to help identify if it has an error and show the template
+	buffer := new(bytes.Buffer)                      // execute values get from map and execute that directly
+	_ = templateWanted.Execute(buffer, templateData) // to help identify if it has an error and show the template
 
 	// render the template
 	_, err := buffer.WriteTo(w)
@@ -58,7 +59,7 @@ func RenderTemplateWithCache(w http.ResponseWriter, tmpl string) {
 }
 
 func CreateTemplate() (map[string]*template.Template, error) {
-	//myCache := make(map[string]*template.Template)
+	//myCache := make(map[string]*template.TemplateData)
 	myCache := map[string]*template.Template{} // same functionality like above.
 
 	// get all the files named *.page.tmpl from ./tempaltes

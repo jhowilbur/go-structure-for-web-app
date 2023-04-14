@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/jhowilbur/golang-web-app/pkg/config"
+	"github.com/jhowilbur/golang-web-app/pkg/models"
 	"github.com/jhowilbur/golang-web-app/pkg/render"
 	"net/http"
 )
@@ -27,9 +28,16 @@ func NewHandlers(r *Repository) {
 }
 
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplateWithCache(w, "home.page.tmpl")
+	render.RenderTemplate(w, "home.page.tmpl", &models.TemplateData{})
 }
 
 func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplateWithCache(w, "about.page.tmpl")
+	// perform some logic
+	stringMap := make(map[string]string)
+	stringMap["test"] = "hello"
+
+	// send the data to the template
+	render.RenderTemplate(w, "about.page.tmpl", &models.TemplateData{
+		StringMap: stringMap,
+	})
 }
