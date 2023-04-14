@@ -12,6 +12,10 @@ import (
 
 var functions = template.FuncMap{}
 
+func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+	return td
+}
+
 var applicationConfig *config.AppConfig
 
 // NewTemplates sets the config for the template package
@@ -38,7 +42,8 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, templateData *models.Tem
 		log.Fatal("Could not get template from template cache")
 	}
 
-	buffer := new(bytes.Buffer)                      // execute values get from map and execute that directly
+	buffer := new(bytes.Buffer) // execute values get from map and execute that directly
+	templateData = AddDefaultData(templateData)
 	_ = templateWanted.Execute(buffer, templateData) // to help identify if it has an error and show the template
 
 	// render the template
