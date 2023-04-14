@@ -2,36 +2,48 @@ package render
 
 import (
 	"bytes"
+	"github.com/jhowilbur/golang-web-app/pkg/config"
 	"html/template"
 	"log"
 	"net/http"
 	"path/filepath"
 )
 
+var functions = template.FuncMap{}
+
+var applicationConfig *config.AppConfig
+
+// NewTemplates sets the config for the template package
+func NewTemplates(a *config.AppConfig) {
+	applicationConfig = a
+}
+
 // RenderTemplate renders templates using html/template
 func RenderTemplateWithCache(w http.ResponseWriter, tmpl string) {
-	// create template cache
-	templateCache, err := createTemplateCache()
-	if err != nil {
-		log.Fatal(err)
+	// get the template cache from the app config
+	var templateCache map[string]*template.Template
+
+	if applicationConfig.UseCache {
+		// template caching
+		templateCache = applicationConfig.TemplateCache
+	} else {
+		// build template cache manually
+		templateCache, _ = CreateTemplate()
 	}
 
 	// get requested template from cache
 	templateWanted, ok := templateCache[tmpl]
 	if !ok {
-		log.Fatal(err)
+		log.Fatal("Could not get template from template cache")
 	}
 
-	buffer := new(bytes.Buffer)               // execute values get from map and execute that directly
-	err = templateWanted.Execute(buffer, nil) // to help identify if it has an error
-	if err != nil {
-		log.Println(err)
-	}
+	buffer := new(bytes.Buffer)             // execute values get from map and execute that directly
+	_ = templateWanted.Execute(buffer, nil) // to help identify if it has an error and show the template
 
 	// render the template
-	_, err = buffer.WriteTo(w)
+	_, err := buffer.WriteTo(w)
 	if err != nil {
-		log.Println(err)
+		log.Println("Error writing template to browser")
 	}
 
 	// it will execute and show the template again if uncomment
@@ -45,7 +57,7 @@ func RenderTemplateWithCache(w http.ResponseWriter, tmpl string) {
 	//}
 }
 
-func createTemplateCache() (map[string]*template.Template, error) {
+func CreateTemplate() (map[string]*template.Template, error) {
 	//myCache := make(map[string]*template.Template)
 	myCache := map[string]*template.Template{} // same functionality like above.
 
