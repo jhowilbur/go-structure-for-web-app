@@ -2,4 +2,4 @@ module github.com/jhowilbur/golang-web-app
 
 go 1.15
 
-require github.com/prometheus/client_golang v1.14.0 // indirect
+require github.com/prometheus/client_golang v1.14.0

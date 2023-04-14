@@ -3,11 +3,11 @@
 ### To run
 1. Without create compiled file
 ```
-$ go run cmd/web/*.go
+go run cmd/web/*.go
 ``` 
 
 2. Create compiled file
 ```
-$ go build cmd/web/*.go
-$ ./main
+go build cmd/web/*.go
+./main
 ```
