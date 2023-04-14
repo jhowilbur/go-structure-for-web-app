@@ -52,15 +52,6 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, templateData *models.Tem
 		log.Println("Error writing template to browser")
 	}
 
-	// it will execute and show the template again if uncomment
-	// this way don't cache the tmpl
-
-	//parsedTemplate, _ := template.ParseFiles("./templates/"+tmpl, "./templates/base.layout.tmpl")
-	//error := parsedTemplate.Execute(w, nil)
-	//if error != nil {
-	//	fmt.Println("Error executing template :", error)
-	//	return
-	//}
 }
 
 func CreateTemplate() (map[string]*template.Template, error) {

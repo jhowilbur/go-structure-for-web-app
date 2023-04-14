@@ -22,7 +22,7 @@ func main() {
 	}
 
 	app.TemplateCache = templateCache
-	app.UseCache = false
+	app.UseCache = true
 
 	repo := handlers.NewRepo(&app)
 	handlers.NewHandlers(repo)
@@ -33,10 +33,17 @@ func main() {
 	http.Handle("/metrics", promhttp.Handler()) // Prometheus metrics
 	handlers.RecordMetrics()                    // Prometheus custom metrics
 
-	http.HandleFunc("/", repo.Home)
-	http.HandleFunc("/about", repo.About)
+	//http.HandleFunc("/", repo.Home)
+	//http.HandleFunc("/about", repo.About)
 
 	log.Println(fmt.Sprintf("Server starting on port %s", portNUmber))
-	_ = http.ListenAndServe(portNUmber, nil)
+	//_ = http.ListenAndServe(portNUmber, nil)
 
+	serve := &http.Server{
+		Addr:    portNUmber,
+		Handler: routes(&app),
+	}
+
+	err = serve.ListenAndServe()
+	log.Fatal(err)
 }
